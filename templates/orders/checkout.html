@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Delivery Information</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5>Choose your order method:</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-ticket-alt fa-3x text-success mb-3"></i>
+                                        <h5>Order through PNR</h5>
+                                        <button type="button" class="btn btn-success mt-3" data-bs-toggle="collapse" data-bs-target="#pnrForm">
+                                            <i class="fas fa-arrow-right me-2"></i>Continue
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-train fa-3x text-primary mb-3"></i>
+                                        <h5>Order by Station/Train No.</h5>
+                                        <button type="button" class="btn btn-primary mt-3" data-bs-toggle="collapse" data-bs-target="#stationForm">
+                                            <i class="fas fa-arrow-right me-2"></i>Continue
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PNR Order Form -->
+                    <div class="collapse" id="pnrForm">
+                        <form method="post" action="{% url 'orders:checkout' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="order_type" value="pnr">
+                            
+                            <div class="mb-3">
+                                <label for="pnr_number" class="form-label">PNR Number*</label>
+                                <input type="text" class="form-control" id="pnr_number" name="pnr_number" pattern="[0-9]{10}" required>
+                                <div class="form-text">Enter your 10-digit PNR number</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="mobile_number" class="form-label">Mobile Number*</label>
+                                <input type="tel" class="form-control" id="mobile_number" name="mobile_number" pattern="[0-9]{10}" required>
+                                <div class="form-text">Enter your 10-digit mobile number</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="delivery_station" class="form-label">Station of Food Delivery*</label>
+                                <select class="form-select" id="delivery_station" name="delivery_station" required>
+                                    <option value="">Select a station...</option>
+                                    <optgroup label="📍 Bhopal & Surrounding">
+                                        <option value="BPL">Bhopal Junction (BPL)</option>
+                                        <option value="RKMP">Habibganj / Rani Kamlapati (RKMP)</option>
+                                        <option value="ET">Itarsi Junction (ET)</option>
+                                        <option value="HBD">Hoshangabad (HBD)</option>
+                                        <option value="SEH">Sehore (SEH)</option>
+                                        <option value="ODG">Obedullaganj (ODG)</option>
+                                        <option value="BIH">Bairagarh (BIH)</option>
+                                    </optgroup>
+                                    <!-- Add other station groups here -->
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="special_instructions" class="form-label">Special Instructions</label>
+                                <textarea class="form-control" id="special_instructions" name="special_instructions" rows="3"></textarea>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-credit-card me-2"></i>Continue to Payment
+                                </button>
+                            </div>
+                        </form> 
+                    </div>
+
+                    <!-- Station/Train Order Form -->
+                    <div class="collapse" id="stationForm">
+                        <form method="post" action="{% url 'orders:checkout' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="order_type" value="station">
+                            
+                            <div class="mb-3">
+                                <label for="station" class="form-label">Select Delivery Station*</label>
+                                <select class="form-select" id="station" name="station" required>
+                                    <option value="">Select a station...</option>
+                                    <optgroup label="📍 Bhopal & Surrounding">
+                                        <option value="BPL">Bhopal Junction (BPL)</option>
+                                        <option value="RKMP">Habibganj / Rani Kamlapati (RKMP)</option>
+                                        <option value="ET">Itarsi Junction (ET)</option>
+                                        <option value="HBD">Hoshangabad (HBD)</option>
+                                        <option value="SEH">Sehore (SEH)</option>
+                                        <option value="ODG">Obedullaganj (ODG)</option>
+                                        <option value="BIH">Bairagarh (BIH)</option>
+                                    </optgroup>
+                                    <optgroup label="📍 Indore Division">
+                                        <option value="INDB">Indore Junction (INDB)</option>
+                                        <option value="LMNR">Laxmibai Nagar (LMNR)</option>
+                                        <option value="RAU">Rau (RAU)</option>
+                                        <option value="MHOW">Mhow (MHOW)</option>
+                                        <option value="FTD">Fatehabad Chandrawatiganj (FTD)</option>
+                                        <option value="PTMP">Pithampur (PTMP)</option>
+                                        <option value="DWX">Dewas (DWX)</option>
+                                        <option value="NAD">Nagda Junction (NAD)</option>
+                                    </optgroup>
+                                    <optgroup label="📍 Ujjain Division">
+                                        <option value="UJN">Ujjain Junction (UJN)</option>
+                                        <option value="MKC">Maksi Junction (MKC)</option>
+                                        <option value="TAN">Tarana Road (TAN)</option>
+                                        <option value="BCH">Berchha (BCH)</option>
+                                        <option value="RNJ">Runija (RNJ)</option>
+                                    </optgroup>
+                                    <optgroup label="📍 Jabalpur Division">
+                                        <option value="JBP">Jabalpur Junction (JBP)</option>
+                                        <option value="MML">Madan Mahal (MML)</option>
+                                        <option value="KTE">Katni Junction (KTE)</option>
+                                        <option value="KMZ">Katni Murwara (KMZ)</option>
+                                        <option value="SHR">Sihora Road (SHR)</option>
+                                        <option value="SDL">Shahdol (SDL)</option>
+                                        <option value="AAL">Amlai (AAL)</option>
+                                        <option value="PND">Pendra Road (PND)</option>
+                                    </optgroup>
+                                    <optgroup label="📍 Satna & Rewa">
+                                        <option value="STA">Satna (STA)</option>
+                                        <option value="REWA">Rewa (REWA)</option>
+                                        <option value="MYR">Maihar (MYR)</option>
+                                        <option value="UHR">Unchhera (UHR)</option>
+                                        <option value="CKTD">Chitrakootdham Karwi (CKTD)</option>
+                                    </optgroup>
+                                    <optgroup label="📍 Gwalior Region">
+                                        <option value="GWL">Gwalior Junction (GWL)</option>
+                                        <option value="BLNR">Birlanagar (BLNR)</option>
+                                        <option value="DBA">Dabra (DBA)</option>
+                                        <option value="MRA">Morena (MRA)</option>
+                                        <option value="SVPI">Shivpuri (SVPI)</option>
+                                        <option value="BIX">Bhind (BIX)</option>
+                                    </optgroup>
+                                    <optgroup label="📍 Sagar-Damoh Zone">
+                                        <option value="SGO">Sagar (SGO)</option>
+                                        <option value="DMO">Damoh (DMO)</option>
+                                        <option value="KYE">Khurai (KYE)</option>
+                                        <option value="PHA">Patharia (PHA)</option>
+                                        <option value="GKA">Garhakota (GKA)</option>
+                                    </optgroup>
+                                    <optgroup label="📍 Betul-Chhindwara Zone">
+                                        <option value="BZU">Betul (BZU)</option>
+                                        <option value="MTY">Multai (MTY)</option>
+                                        <option value="CWA">Chhindwara Junction (CWA)</option>
+                                        <option value="PUX">Parasia (PUX)</option>
+                                    </optgroup>
+                                    <optgroup label="📍 Khandwa-Burhanpur Division">
+                                        <option value="KNW">Khandwa Junction (KNW)</option>
+                                        <option value="BAU">Burhanpur (BAU)</option>
+                                        <option value="NPNR">Nepanagar (NPNR)</option>
+                                        <option value="SWD">Sanawad (SWD)</option>
+                                        <option value="OM">Omkareshwar Road (OM)</option>
+                                    </optgroup>
+                                    <optgroup label="📍 Other Important Stations">
+                                        <option value="NU">Narsinghpur (NU)</option>
+                                        <option value="HD">Harda (HD)</option>
+                                        <option value="PPI">Pipariya (PPI)</option>
+                                        <option value="SEY">Seoni (SEY)</option>
+                                        <option value="BGT">Balaghat (BGT)</option>
+                                        <option value="MFR">Mandla Fort (MFR)</option>
+                                        <option value="GUNA">Guna (GUNA)</option>
+                                        <option value="ASKN">Ashok Nagar (ASKN)</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="train_name" class="form-label">Train Name*</label>
+                                <input type="text" class="form-control" id="train_name" name="train_name" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="train_number" class="form-label">Train Number*</label>
+                                <input type="text" class="form-control" id="train_number" name="train_number" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="class_type" class="form-label">Class Type*</label>
+                                <select class="form-select" id="class_type" name="class_type" required>
+                                    <option value="">Select class type...</option>
+                                    <option value="1A">AC First Class (1A)</option>
+                                    <option value="2A">AC 2 Tier (2A)</option>
+                                    <option value="3A">AC 3 Tier (3A)</option>
+                                    <option value="CC">Chair Car (CC)</option>
+                                    <option value="EC">Executive Class (EC)</option>
+                                    <option value="SL">Sleeper Class (SL)</option>
+                                    <option value="GEN">General (GEN)</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="mobile_number" class="form-label">Mobile Number*</label>
+                                <input type="tel" class="form-control" id="mobile_number" name="mobile_number" pattern="[0-9]{10}" required>
+                                <div class="form-text">Enter your 10-digit mobile number</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="special_instructions" class="form-label">Special Instructions</label>
+                                <textarea class="form-control" id="special_instructions" name="special_instructions" rows="3"></textarea>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-credit-card me-2"></i>Continue to Payment
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">Your Cart</h4>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for item in cart.items.all %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="my-0">{{ item.food_item.name }}</h6>
+                                <small class="text-muted">Quantity: {{ item.quantity }}</small>
+                            </div>
+                            <span class="text-muted">₹{{ item.subtotal }}</span>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item">Your cart is empty.</li>
+                    {% endfor %}
+                    <li class="list-group-item d-flex justify-content-between bg-light">
+                        <strong>Total (INR)</strong>
+                        <strong>₹{{ cart.get_total }}</strong>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
